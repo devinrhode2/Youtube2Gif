@@ -1,0 +1,117 @@
+﻿
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" media="screen" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" media="screen" type="text/css" href="css/jquery-ui-1.8.23.custom.css" />
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.8.23.custom.min.js"></script>
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+    <script type="text/javascript">
+            var youTubePlayer;
+            function makeSomeTime(seconds) {
+                var hours = Math.floor(seconds / (60 * 60));
+                var div_for_min = seconds % (60 * 60);
+                var min = Math.floor(div_for_min / 60);
+                var div_for_sec = div_for_min % 60;
+                var seconds = Math.ceil(div_for_sec);
+                if (seconds < 10) { seconds = "0" + seconds; }
+                return min + ":" + seconds;
+            }
+            function onYouTubePlayerReady(playerId) {
+                youTubePlayer = $("#myvideo").get(0);
+                $(".startbox").val("0");
+                $(".endbox").val(youTubePlayer.getDuration());
+                $(function () {
+                    // Slider
+                    $('#slider').slider({
+                        range: true,
+                        min: 0,
+                        max: youTubePlayer.getDuration(),
+                        values: [0, youTubePlayer.getDuration()],
+                        slide: function (event, ui) {
+                            $(".startbox").val(makeSomeTime($(this).slider("values", 0)));
+                            $(".endbox").val(makeSomeTime($(this).slider("values", 1)));
+                        }
+                    });
+                });
+            }
+            var params = { allowScriptAccess: "always" };
+            var atts = { id: "myvideo" };
+            swfobject.embedSWF('http://www.youtube.com/v/9bZkp7q19f0?enablejsapi=1&version=3', 'video', 560, 315, "8", null, null, params, atts);
+		</script>
+        <script>
+            //$("#form1").submit(function(event) {
+            $(function () {
+
+                event.preventDefault();
+
+                $("#generate").click(function () {
+                    var URL = $("#URL").val();
+                    var StartTime = $("#StartTime").val();
+                    var Duration = $("#Duration").val();
+
+                    //alert("Test Data output: " + " URL: " + URL + " Start Time: " + StartTime + " End Time: " + Duration);
+
+                    $.post("run.php", {
+                        U: URL,
+                        S: StartTime,
+                        D: Duration
+                    }, function (data) {
+                        alert(data);
+                    });
+
+                });
+            });
+
+        </script>
+    <title>GIF</title>
+
+</head>
+<body>
+<div class="container">
+    <form>
+        <div class="input-holder">
+            <input class="textbox" id="URL" type="text" name="URL"/>
+            <input type="button" id="go" onclick="go_go" class="buttontext" value="Go!" />
+        </div>
+    </form>
+        <div class="controlpanel">
+            <div id="slider">
+            </div>
+            <div class="innercontainer">
+                <div class="start">
+                    <div class="labelholder"><a class="label">START</a></div>
+                    <input name="StartTime" id="StartTime" class="startbox box" type="text"/>
+                </div>
+                <div class="video" id="video"></div>
+                <div class="end">
+                    <div class="labelholder"><a class="label endlabel">END</a></div>
+                    <input name="Duration" id="Duration" class="endbox box" type="text"/>
+                </div>
+            </div>
+            <div class="generate-holder">
+                <button id="generate" class="generate" name="generate">Generate!</button>
+            </div>
+            <a id="output"></a>
+        </div>
+</div>
+
+
+
+    <div class="footer">
+        <div class="left">
+            <!-- About -->
+            <!-- Contact -->
+        </div>
+        <div class="right">
+            <!-- shares -->
+        </div>
+    </div>
+</body>
+</html>
