@@ -46,7 +46,6 @@
             swfobject.embedSWF('http://www.youtube.com/v/9bZkp7q19f0?enablejsapi=1&version=3', 'video', 560, 315, "8", null, null, params, atts);
 		</script>
         <script>
-            //$("#form1").submit(function(event) {
             $(function () {
 
                 event.preventDefault();
@@ -54,14 +53,20 @@
                 $("#generate").click(function () {
                     var URL = $("#URL").val();
                     var StartTime = $("#StartTime").val();
-                    var Duration = $("#Duration").val();
+                    var EndTime = $("#Duration").val();
 
-                    //alert("Test Data output: " + " URL: " + URL + " Start Time: " + StartTime + " End Time: " + Duration);
+                    var a = StartTime.split(':');
+                    var b = EndTime.split(':');
+
+                    var aa = (+a[0]) * 60 + (+a[1]);
+                    var bb = (+b[0]) * 60 + (+b[1]);
+
+                    var D = bb - aa;
 
                     $.post("run.php", {
                         U: URL,
                         S: StartTime,
-                        D: Duration
+                        D: D
                     }, function (data) {
                         alert(data);
                     });
