@@ -1,14 +1,21 @@
-/* Document Information
+// /* Document Information
 
-- Document: Main JS
-- Version:  1.0.0
- 
-*/
+// - Document: Main JS
+// - Version:  1.0.0
 
-
-/*
-
-To Do:
+// */
 
 
-*/
+// /*
+
+// To Do:
+
+
+// */
+// var giffytest = {
+
+// }
+
+// $(document).ready(function () {
+//     giffytest.init();
+// });

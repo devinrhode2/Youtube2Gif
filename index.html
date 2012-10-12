@@ -6,14 +6,71 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" media="screen" type="text/css" href="css/style.css" />
     <link rel="stylesheet" media="screen" type="text/css" href="css/jquery-ui-1.8.23.custom.css" />
-    <script type="text/javascript" src="js/main.js"></script>
     <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.8.23.custom.min.js"></script>
-
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
     <script type="text/javascript">
             var youTubePlayer;
+            var params = { allowScriptAccess: "always" };
+            var atts = { id: "myvideo" };
+            var UID = "";
+            var GifName = "";
+            $(function createVideo(){
+
+                $("#go").click(function () {
+
+                    var U = $("#URL").val();
+
+                    var video_id = U.split('v=')[1];
+                    var ampersandPosition = video_id.indexOf('&');
+                    if(ampersandPosition != -1) {
+                      video_id = video_id.substring(0, ampersandPosition);
+                    }
+
+                    if (U == null || U == ""){
+                        alert("Input a Video ID");
+                    }
+                    else {
+                        UID = video_id;
+                        $.post("download.php", {
+                            UID: UID
+                        }, function (data) {
+
+                        });
+                    }
+
+                    swfobject.embedSWF('http://www.youtube.com/v/' + UID + '?enablejsapi=1&version=3', 'video', 560, 315, "9", null, null, params, atts);
+                });
+            });
+            $(function fireGenerate() {
+
+                $("#generate").click(function () {
+                    var URL = $("#URL").val();
+                    var StartTime = $("#StartTime").val();
+                    var EndTime = $("#Duration").val();
+
+                    var a = StartTime.split(':');
+                    var b = EndTime.split(':');
+
+                    var aa = (+a[0]) * 60 + (+a[1]);
+                    var bb = (+b[0]) * 60 + (+b[1]);
+
+                    var D = bb - aa;
+
+                    $.post("run.php", {
+                        U: URL,
+                        S: StartTime,
+                        D: D,
+                        UID: UID
+                    }, function (data) {
+                        var G = (data)
+                        window.location = "http://lsbehost3/Giftest/" + G + ".gif";
+                    });
+
+                });   
+            });
             function makeSomeTime(seconds) {
                 var hours = Math.floor(seconds / (60 * 60));
                 var div_for_min = seconds % (60 * 60);
@@ -37,53 +94,22 @@
                         slide: function (event, ui) {
                             $(".startbox").val(makeSomeTime($(this).slider("values", 0)));
                             $(".endbox").val(makeSomeTime($(this).slider("values", 1)));
+                            var s = $(this).slider("values", 0);
+                            youTubePlayer.seekTo(s,true);
                         }
                     });
                 });
             }
-            var params = { allowScriptAccess: "always" };
-            var atts = { id: "myvideo" };
-            swfobject.embedSWF('http://www.youtube.com/v/9bZkp7q19f0?enablejsapi=1&version=3', 'video', 560, 315, "8", null, null, params, atts);
-		</script>
-        <script>
-            $(function () {
-
-                $("#generate").click(function () {
-                    var URL = $("#URL").val();
-                    var StartTime = $("#StartTime").val();
-                    var EndTime = $("#Duration").val();
-
-                    var a = StartTime.split(':');
-                    var b = EndTime.split(':');
-
-                    var aa = (+a[0]) * 60 + (+a[1]);
-                    var bb = (+b[0]) * 60 + (+b[1]);
-
-                    var D = bb - aa;
-
-                    $.post("run.php", {
-                        U: URL,
-                        S: StartTime,
-                        D: D
-                    }, function (data) {
-                        alert(data);
-                    });
-
-                });
-            });
-
         </script>
     <title>GIF</title>
 
 </head>
 <body>
 <div class="container">
-    <form>
         <div class="input-holder">
             <input class="textbox" id="URL" type="text" name="URL"/>
-            <input type="button" id="go" onclick="go_go" class="buttontext" value="Go!" />
+            <button name="go" id="go" class="buttontext">Go!</button>
         </div>
-    </form>
         <div class="controlpanel">
             <div id="slider">
             </div>
